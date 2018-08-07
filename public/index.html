@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>demoHTML</title>
+    <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lora">
+    <link rel="stylesheet" href="styles/styles.min.css">
+    <link href="./styles/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="./styles/videostyle.css" rel="stylesheet" type="text/css">
+    <script>
+        // getUserMedia only works over https in Chrome 47+, so we redirect to https. Also notify user if running from file.
+        if (window.location.protocol == "file:") {
+            alert("You seem to be running this example directly from a file. Note that these examples only work when served from a server or localhost due to canvas cross-domain restrictions.");
+        } else if (window.location.hostname !== "localhost" && window.location.protocol !== "https:"){
+            window.location.protocol = "https";
+        }
+    </script>
+</head>
+
+<body style="background-color:#ddd;">
+    <nav class="navbar navbar-light navbar-expand-md" style="background-color:#2d226d;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="color:#eee;">Very Very Difficult Contents</a>
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav"></ul>
+            </div>
+        </div>
+    </nav>
+    <div class="article-dual-column" style="background-color:#ddd;">
+        <div class="container" style="margin-top:50px;">
+            <div class="row">
+                <div class="col-md-10 col-lg-3 offset-md-1" style="padding-top:20px;">
+                    <div class="toc">
+                        <p>Chapters</p>
+                        <ul>
+                            <li>
+                                <a href="#">Plumbing and Porcelain
+                                    <br>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">Git Objects
+                                    <br>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">Git References
+                                    <br>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery">Maintenance and Data Recovery</a>
+                                <br>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-10 col-lg-7 offset-md-1 offset-lg-0" style="background-color:#eee;border:solid 1px #e2e0d8;border-radius:10px;padding-top:20px;">
+                    <div class="sect3">
+                        <h3 id="_data_recovery">Data Recovery</h3>
+                        <div class="paragraph">
+                            <p>At some point in your Git journey, you may accidentally lose a commit. Generally, this happens
+                                because you force-delete a branch that had work on it, and it turns out you wanted the branch
+                                after all; or you hard-reset a branch, thus abandoning commits that you wanted something
+                                from. Assuming this happens, how can you get your commits back?</p>
+                        </div>
+                        <div class="paragraph">
+                            <p>Here’s an example that hard-resets the master branch in your test repository to an older commit
+                                and then recovers the lost commits. First, let’s review where your repository is at this
+                                point:</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git log --pretty=oneline
+ab1afef80fac8e34258ff41fc1b867c702daa24b modified repo a bit
+484a59275031909e19aadb7c92262719cfcdf19a added repo.rb
+1a410efbd13591db07496601ebc7a059dd55cfe9 third commit
+cac0cab538b970a37ea1e769cbbde608743bc96d second commit
+fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>Now, move the
+                                <code>master</code> branch back to the middle commit:</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git reset --hard 1a410efbd13591db07496601ebc7a059dd55cfe9
+HEAD is now at 1a410ef third commit
+$ git log --pretty=oneline
+1a410efbd13591db07496601ebc7a059dd55cfe9 third commit
+cac0cab538b970a37ea1e769cbbde608743bc96d second commit
+fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>You’ve effectively lost the top two commits – you have no branch from which those commits are
+                                reachable. You need to find the latest commit SHA-1 and then add a branch that points to
+                                it. The trick is finding that latest commit SHA-1 – it’s not like you’ve memorized it, right?</p>
+                        </div>
+                        <div class="paragraph">
+                            <p>Often, the quickest way is to use a tool called
+                                <code>git reflog</code>. As you’re working, Git silently records what your HEAD is every time you change it. Each
+                                time you commit or change branches, the reflog is updated. The reflog is also updated by
+                                the
+                                <code>git update-ref</code> command, which is another reason to use it instead of just writing the SHA-1 value to your
+                                ref files, as we covered in
+                                <a href="ch00/_git_refs">Git References</a>. You can see where you’ve been at any time by running
+                                <code>git reflog</code>:</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git reflog
+1a410ef HEAD@{0}: reset: moving to 1a410ef
+ab1afef HEAD@{1}: commit: modified repo.rb a bit
+484a592 HEAD@{2}: commit: added repo.rb</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>Here we can see the two commits that we have had checked out, however there is not much information
+                                here. To see the same information in a much more useful way, we can run
+                                <code>git log -g</code>, which will give you a normal log output for your reflog.</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git log -g
+commit 1a410efbd13591db07496601ebc7a059dd55cfe9
+Reflog: HEAD@{0} (Scott Chacon &lt;schacon@gmail.com&gt;)
+Reflog message: updating HEAD
+Author: Scott Chacon &lt;schacon@gmail.com&gt;
+Date:   Fri May 22 18:22:37 2009 -0700
+
+		third commit
+
+commit ab1afef80fac8e34258ff41fc1b867c702daa24b
+Reflog: HEAD@{1} (Scott Chacon &lt;schacon@gmail.com&gt;)
+Reflog message: updating HEAD
+Author: Scott Chacon &lt;schacon@gmail.com&gt;
+Date:   Fri May 22 18:15:24 2009 -0700
+
+       modified repo.rb a bit</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>It looks like the bottom commit is the one you lost, so you can recover it by creating a new
+                                branch at that commit. For example, you can start a branch named
+                                <code>recover-branch</code> at that commit (ab1afef):</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git branch recover-branch ab1afef
+$ git log --pretty=oneline recover-branch
+ab1afef80fac8e34258ff41fc1b867c702daa24b modified repo a bit
+484a59275031909e19aadb7c92262719cfcdf19a added repo.rb
+1a410efbd13591db07496601ebc7a059dd55cfe9 third commit
+cac0cab538b970a37ea1e769cbbde608743bc96d second commit
+fdf4fc3344e67ab068f836878b6c4951e3b15f3d first commit</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>Cool – now you have a branch named
+                                <code>recover-branch</code> that is where your
+                                <code>master</code> branch used to be, making the first two commits reachable again. Next, suppose your loss
+                                was for some reason not in the reflog – you can simulate that by removing
+                                <code>recover-branch</code> and deleting the reflog. Now the first two commits aren’t reachable by anything:</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git branch -D recover-branch
+$ rm -Rf .git/logs/</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>Because the reflog data is kept in the
+                                <code>.git/logs/</code> directory, you effectively have no reflog. How can you recover that commit at this point?
+                                One way is to use the
+                                <code>git fsck</code> utility, which checks your database for integrity. If you run it with the
+                                <code>--full</code> option, it shows you all objects that aren’t pointed to by another object:</p>
+                        </div>
+                        <div class="listingblock">
+                            <div class="content">
+                                <pre class="highlight"><code class="language-console" data-lang="console">$ git fsck --full
+Checking object directories: 100% (256/256), done.
+Checking objects: 100% (18/18), done.
+dangling blob d670460b4b4aece5915caf5c68d12f560a9fe3e4
+dangling commit ab1afef80fac8e34258ff41fc1b867c702daa24b
+dangling tree aea790b9a58f6cf6f2804eeac9f0abbe9631e4c9
+dangling blob 7108f7ecb345ee9d0084193f147cdad4d2998293</code></pre>
+                            </div>
+                        </div>
+                        <div class="paragraph">
+                            <p>In this case, you can see your missing commit after the string “dangling commit”. You can recover
+                                it the same way, by adding a branch that points to that SHA-1.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="row">
+            <div class="col">
+                <p style="margin-top:10px;margin-bottom:3px;font-size:10px;text-align:center;">Most of the contents of this demo page is cloned from https://git-scm.com/book/en/v2/Git-Internals-Maintenance-and-Data-Recovery</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="debug">
+        <div id="container">
+            <video id="videoel" width="400" height="300" preload="auto" loop playsinline autoplay>
+            </video>
+            <canvas id="overlay" width="400" height="300"></canvas>
+        </div>
+        <div id="emotion_container">
+            <div id='emotion_chart'></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/clmtrackr.js"></script>
+    <script src="./js/model_pca_20_svm.js"></script>
+    <script src="./js/d3.min.js"></script>
+    <script src="./js/incldetection.js"></script>
+    <script src="./js/huectl.js"></script>
+    <script src="./js/trackmain.js"></script>
+</body>
+
+</html>
