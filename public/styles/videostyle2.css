@@ -1,0 +1,57 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+			
+			#debug {
+				display: none;
+				width: 450px;
+				padding: 25px;
+				position: fixed;
+    			top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background-color: #333;
+				border-radius: 15px;
+			}
+
+			#overlay {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				-o-transform : scaleX(-1);
+				-webkit-transform : scaleX(-1);
+				transform : scaleX(-1);
+				-ms-filter : fliph; /*IE*/
+				filter : fliph; /*IE*/
+
+				
+			}
+
+			#videoel {
+				-o-transform : scaleX(-1);
+				-webkit-transform : scaleX(-1);
+				transform : scaleX(-1);
+				-ms-filter : fliph; /*IE*/
+				filter : fliph; /*IE*/
+
+				
+			}
+
+			#container {
+				position : relative;
+				width : 400px;
+				/*margin : 0px auto;*/
+			}
+
+			#emotion_container {
+				width: 400px;
+			}
+
+			#emotion_chart {
+				margin: 0 auto;
+				width : 400px;
+			}
+
+			/* d3 */
+			.bar {
+				fill : steelblue;
+				fill-opacity : .9;
+			}

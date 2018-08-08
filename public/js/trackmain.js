@@ -75,7 +75,7 @@ function drawLoop() {
         const param = BiasScore(pos);
 
         // Update debug display
-        updateData([{ "emotion": '疲れた', "value": param }]);
+        updateData([{ "emotion": '疲れた', "value": param * 28 }]);
         // Do HUE control
         changeColor(param);
     }
