@@ -72,8 +72,7 @@ function drawLoop() {
         console.log(pos[0][0] + ', ' + pos[0][1] + ', ' + pos[13][0] + ', ' + pos[13][1])
 
         // 傾き検知処理
-        //const param = licldetection(pos);
-        const param = pos[0][0] * 200;
+        const param = BiasScore(pos);
 
         // Update debug display
         updateData([{ "emotion": '疲れた', "value": param }]);
