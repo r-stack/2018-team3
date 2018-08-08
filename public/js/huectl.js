@@ -6,9 +6,10 @@ const url = "https://192.168.100.114/api/xRQtVO0TCT5yzA5uawrUAFGfiOdOOv4-r7rR06Y
 
 function changeColor(prm) {
 
-    const a = (Math.PI / 2) / 46920;
-    const y = 46920 - a * prm;
+    const a = 46920 / 0.7;
+    let y = 46920 - a * prm;
 
+    y = y < 0 ? 0 : y;
 
     // あまり早すぎると動かないので、700msに一度だけ色を更新する
     if (new Date().getTime() - lastPut.getTime() > 700) {
